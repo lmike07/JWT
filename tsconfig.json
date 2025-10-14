@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "noEmitOnError": false,
+    "removeComments": false,
+    "sourceMap": false,
+    "esModuleInterop": true,
+    "target": "es5",
+    "outDir": "dist"
+  },
+  "include": [
+    "./"
+  ]
+}

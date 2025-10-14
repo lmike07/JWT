@@ -1,0 +1,164 @@
+Autenticação (Authentication)
+
+-> O que é:
+É o processo de verificar quem é o usuário.
+Ou seja, confirmar se ele é realmente quem diz ser.
+
+tipo de Autenticação:
+
+Autenticação com senha
+Autenticação com token de acesso
+Autenticação com certificado digital
+
+-----------------------------------------------------------------------------
+
+Autorização (Authorization)
+
+-> O que é:
+É o processo de verificar o que o usuário pode fazer depois de autenticado.
+Define permissões e acessos a recursos. 
+
+-----------------------------------------------------------------------------
+
+1. AWS Cognito (Amazon Web Services Cognito)
+
+O que é:
+É um serviço gerenciado da AWS para autenticação, autorização e gerenciamento de usuários em aplicativos web e mobile.
+
+Função:
+Permite que usuários façam login e cadastro usando:
+
+- E-mail/senha,
+- Provedores externos (Google, Facebook, Apple, etc.),
+- Ou até federados via SAML ou OpenID Connect (como o Azure AD).
+
+Recursos principais:
+
+Autenticação e registro de usuários.
+
+Tokens JWT (ID, Access e Refresh).
+
+MFA (autenticação de múltiplos fatores) com SMS, TOTP (Google Authenticator).
+
+Integração com API Gateway e Lambda.
+
+👉 Exemplo de uso:
+Um backend Node.js pode usar o Cognito para validar tokens JWT e permitir acesso apenas a usuários autenticados.
+
+-----------------------------------------------------------------------------
+
+2. Azure AD (Active Directory / Entra ID)
+
+O que é:
+É o serviço da Microsoft para gerenciamento de identidades corporativas e autenticação SSO (Single Sign-On).
+
+Função:
+É muito usado em empresas para que colaboradores acessem sistemas com as mesmas credenciais do Microsoft 365, por exemplo.
+
+Recursos principais:
+
+Suporte a SAML, OAuth2, OpenID Connect.
+
+Autenticação multifator (MFA).
+
+Integração com provedores externos (como Google ou Cognito).
+
+Gerenciamento de permissões e grupos corporativos.
+
+👉 Exemplo de uso:
+Uma empresa pode integrar o login do seu sistema interno com o Azure AD, 
+permitindo que funcionários usem o mesmo e-mail corporativo para acessar.
+
+-----------------------------------------------------------------------------
+
+3. Google Authenticator
+
+O que é:
+Um aplicativo de autenticação (gerador de códigos TOTP) para autenticação de dois fatores (2FA).
+
+Função:
+Ele gera códigos temporários (normalmente de 6 dígitos, válidos por 30 segundos) 
+usados junto com login/senha para reforçar a segurança.
+
+Recursos principais:
+
+Implementa o padrão TOTP (Time-based One-Time Password).
+
+Não é um provedor de identidade, apenas um método de verificação adicional.
+
+Pode ser usado com AWS Cognito, Azure AD e vários outros sistemas.
+
+👉 Exemplo de uso:
+Ao ativar MFA no Cognito, o usuário escaneia um QR Code no Google Authenticator para gerar códigos que serão exigidos no login.
+
+-----------------------------------------------------------------------------
+
+1. Base64 — Codificação (não é criptografia!)
+
+O que é:
+É apenas um método de codificação para transformar dados binários (como texto, imagem ou senha) em caracteres legíveis.
+
+
+2. MD5 — Hash inseguro
+
+O que é:
+Um algoritmo de hash unidirecional (não dá pra “reverter” facilmente).
+
+
+3. bcrypt — Hash seguro (recomendado)
+
+O que é:
+Um algoritmo de hashing com sal (salt) e custo configurável, criado especialmente para armazenar senhas com segurança.
+
+
+-----------------------------------------------------------------------------
+
+
+JWT (JSON Web Token) é um padrão de token usado para autenticação e troca segura de informações entre sistemas.
+Ele é muito usado em aplicações Node.js, APIs REST, e sistemas de login modernos.
+
+---
+Estrutura do JWT
+
+Um token JWT é dividido em **três partes**, separadas por pontos (`.`):
+
+```
+xxxxx.yyyyy.zzzzz
+```
+
+Essas partes são:
+
+1. Header (Cabeçalho)
+   Contém informações sobre o tipo de token e o algoritmo de criptografia.
+   Exemplo:
+
+   ```json
+   {
+     "alg": "HS256",
+     "typ": "JWT"
+   }
+   ```
+
+2. Payload (Corpo / Dados)
+   Contém as informações (claims) que você quer guardar — por exemplo, o ID do usuário.
+   Exemplo:
+
+   ```json
+   {
+     "id": "123",
+     "nome": "Maycon",
+     "exp": 1712345678
+   }
+   ```
+
+3. Signature (Assinatura)
+   Garante que o token **não foi alterado**.
+   É gerada com uma **chave secreta** no servidor:
+
+   ```
+   HMACSHA256(
+       base64UrlEncode(header) + "." + base64UrlEncode(payload),
+       segredo
+   )
+   ```
+
